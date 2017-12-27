@@ -29,6 +29,7 @@ namespace DatingApi.API
             services.AddDbContext<DataContext>(options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             //https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext
 
+            services.AddCors();
             services.AddMvc();
         }
 
@@ -40,6 +41,15 @@ namespace DatingApi.API
                 app.UseDeveloperExceptionPage();
             }
 
+            // before UseMvc runs, UseCors needs to be run
+            app.UseCors(builder => {
+                //https://elanderson.net/2016/11/cross-origin-resource-sharing-cors-in-asp-net-core/
+                builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            });
             app.UseMvc();
         }
     }
