@@ -23,6 +23,7 @@ namespace DatingApi.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        // place for dependency injection
         public void ConfigureServices(IServiceCollection services)
         {
             // Configuring a Db Context, adding the Dbcontext to dependency injection
@@ -31,6 +32,7 @@ namespace DatingApi.API
 
             services.AddCors();
             services.AddMvc();
+            services.AddScoped<IAuthRepository, AuthRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
