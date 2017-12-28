@@ -7,6 +7,7 @@ using DatingApp.Api.Data;
 using DatingApp.Api.Dtos;
 using DatingApp.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.Api.Controllers
@@ -15,10 +16,12 @@ namespace DatingApp.Api.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthRepository _repo;
+        private readonly IConfiguration _config;
 
-        public AuthController(IAuthRepository repo) 
+        public AuthController(IAuthRepository repo, IConfiguration config) 
         {
             _repo = repo;
+            _config = config;
         }
 
         [HttpPost("register")]
@@ -54,7 +57,7 @@ namespace DatingApp.Api.Controllers
 
             // generate token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("super secret key");
+            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:Token").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -62,6 +65,9 @@ namespace DatingApp.Api.Controllers
                     new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
                     new Claim(ClaimTypes.Name, userFromRepo.Username)
                 }),
+                // if we want to add issuer and audience, you can add here (below example)
+                // Issuer = "issuer name",
+                // Audience = "audience name",
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
                     SecurityAlgorithms.HmacSha512Signature)
@@ -71,7 +77,5 @@ namespace DatingApp.Api.Controllers
 
             return Ok( new {tokenString} );
         }
-
-
     }
 }
