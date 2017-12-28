@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatingApp.Api.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApi.API.Controllers
 {
+    [Authorize] //all below methods needs to be authorized
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
