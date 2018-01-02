@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatingApi.API.Controllers
 {
-    [Authorize] //all below methods needs to be authorized
+    // [Authorize] //all below methods needs to be authorized
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
