@@ -39,8 +39,12 @@ namespace DatingApi.API
 
             services.AddTransient<Seed>();
             services.AddCors();
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
 
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
             // for JWT token authentication
