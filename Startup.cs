@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using datingapp.api.Helper;
 using DatingApp.Api.Data;
 using DatingApp.Api.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,7 +49,7 @@ namespace DatingApi.API
             services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddAutoMapper();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-
+            services.AddScoped<LogUserActivity>();
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
             // for JWT token authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
