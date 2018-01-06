@@ -25,16 +25,21 @@ namespace DatingApp.Api.Data
             _context.Remove(entity);
         }
 
-        public Task<Photo> GetMainPhotoForUser(int userId)
+        public async Task<Like> GetLike(int userId, int recipientId)
         {
-            return _context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
+            return await _context.Likes.FirstOrDefaultAsync(u => u.LikerId == userId && u.LikeeId == recipientId);
         }
 
-        public Task<Photo> GetPhoto(int id)
+        public async Task<Photo> GetMainPhotoForUser(int userId)
+        {
+            return await _context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
+        }
+
+        public async Task<Photo> GetPhoto(int id)
         {
             var photo = _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
             
-            return photo;
+            return await photo;
         }
 
         public async Task<User> GetUser(int id)
@@ -53,6 +58,16 @@ namespace DatingApp.Api.Data
 
             // return specified gender of result
             users = users.Where(u => u.Gender == userParams.Gender);
+
+            if (userParams.Likers)
+            {
+                users = users.Where(u => u.Liker.Any(l => l.LikerId == u.Id));
+            }
+
+            if (userParams.Likees)
+            {
+                users = users.Where(u => u.Likee.Any(l => l.LikeeId == u.Id));
+            }
 
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
